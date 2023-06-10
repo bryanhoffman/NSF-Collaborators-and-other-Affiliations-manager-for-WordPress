@@ -13,7 +13,7 @@
  * part a whole different plugin
  */
   
-function create_posttypes() {
+function create_publication_and_people_post_types() {
   
     register_post_type( 'publications',
         array(
@@ -58,29 +58,8 @@ function create_posttypes() {
         'show_in_rest'        => true,
         )
     );
-	
-    register_post_type( 'group_members',
-        array(
-            'labels' => array(
-                'name' => __( 'Group Members' ),
-                'singular_name' => __( 'Group Member' )
-            ),
-        'public'              => true,
-        'show_ui'             => true,
-        'show_in_menu'        => true,
-        'show_in_nav_menus'   => true,
-        'show_in_admin_bar'   => true,
-        'menu_position'       => 4,
-        'can_export'          => true,
-        'has_archive'         => true,
-        'exclude_from_search' => false,
-        'publicly_queryable'  => true,
-        'capability_type'     => 'post',
-        'show_in_rest' => 0,
-        )
-    );
 }
-add_action( 'init', 'create_posttypes' );
+add_action( 'init', 'create_publication_and_people_post_types' );
 
 /*
  * This plugin requires the plugin Advanced Custom Fields
@@ -1056,57 +1035,3 @@ function download_csv() {
 	}
 }
 
-// Group Member Stuff
-
-// function that shows group members with their profiles
-function group_members_full_profile_shortcode() { 
-$message = "";  
-$members = get_posts([
-  'post_type' => 'group_members',
-  'post_status' => 'publish',
-  'numberposts' => -1,
-  'order' => 'DESC'
-]);
-
-    if( is_array($members) ) {
-        foreach( $members as $member ) {
-				$message=$message."<div class=\"profile\"><img class=\"profile-image\" src=\"".wp_get_attachment_image_url( $member->regular_image, "medium")."\">";
-				$message=$message."<h3 class=\"profile-name\">".$member->post_title." ".$member->pronouns."</h3>";
-				if($member->title) { $message = $message."<h4 class=\"profile-title\">".$member->title."</h4>"; }
-				$message=$message."<span class=\"profile-bio\">".$member->post_content."</span></div>";
-        }
-        
-    }
-  
-// Output needs to be return
-return $message;
-}
-// register shortcode
-add_shortcode('group_members_with_profiles', 'group_members_full_profile_shortcode');
-
-
-// function that shows group members with their profiles
-function group_members_preview_shortcode() { 
-$message = "";  
-$members = get_posts([
-  'post_type' => 'group_members',
-  'post_status' => 'publish',
-  'numberposts' => -1,
-  'order' => 'DESC'
-]);
-
-    if( is_array($members) ) {
-		$message=$message."<div class=\"profile-grid\">";
-        foreach( $members as $member ) {
-				$message=$message."<div class=\"profile-preview\"><img class=\"profile-image\" src=\"".wp_get_attachment_image_url( $member->regular_image, "medium")."\"><img class=\"silly-image\" src=\"".wp_get_attachment_image_url( $member->silly_image, "medium")."\">";
-				$message=$message."<h5 class=\"profile-name\">".$member->post_title." ".$member->pronouns."</h5>";
-				if($member->title) { $message = $message."<h6 class=\"profile-title\">".$member->title."</h6>"; }
-				$message=$message."</div>";
-        } 
-		$message=$message."</div>";
-    }
-	
-return $message;
-}
-// register shortcode
-add_shortcode('group_members_preview', 'group_members_preview_shortcode');
