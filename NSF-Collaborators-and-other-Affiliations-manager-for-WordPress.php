@@ -88,7 +88,7 @@ add_action( 'init', 'create_posttypes' );
  */
 
 // check that ACF is installed
-if(class_exists('ACF')) {
+if(in_array('advanced-custom-fields/acf.php', apply_filters('active_plugins', get_option('active_plugins')))) {
 
 function my_acf_add_local_field_groups() {
 // People (Authors)
@@ -657,9 +657,10 @@ acf_add_local_field_group(array (
 	'hide_on_screen' => '',
 	'show_in_rest' => 1,
 ));
+}
 add_action('acf/init', 'my_acf_add_local_field_groups');
 
-}} else {
+} else {
 	// display message in admin about needing ACF plugin
 	function ACF_required_admin_notice() {
 	    echo '<div class="notice notice-warning">
